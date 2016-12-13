@@ -7,6 +7,7 @@ The second floor contains a cobalt generator, a curium generator, a ruthenium ge
 The third floor contains a cobalt-compatible microchip, a curium-compatible microchip, a ruthenium-compatible microchip, and a plutonium-compatible microchip.
 The fourth floor contains nothing relevant."""
 
+# Even indices (incl 0) are generators, odd are microchips
 start_pt1 = [1, 1, 2, 3, 2, 3, 2, 3, 2, 3]
 start_pt2 = [1, 1, 1, 1, 1, 1, 2, 3, 2, 3, 2, 3, 2, 3]
 
