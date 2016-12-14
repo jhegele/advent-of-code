@@ -1,8 +1,9 @@
 import hashlib
 import re
+from functools import lru_cache
 
 # Flag to enable part 2
-part2 = False
+part2 = True
 
 class Key(object):
   """Creates a key and tracks its state"""
@@ -22,6 +23,19 @@ class Key(object):
         self.valid = True
         self.check = False
 
+# Since hashing can be expensive, we memoize this function which allows
+# caching and speeds up performance
+@lru_cache(maxsize=None)
+def get_hash(salt, idx):
+  """Build our hash from the provided salt and index value"""
+  h = hashlib.md5('{0}{1}'.format(salt, idx).encode()).hexdigest()
+  # For part 2, we need to stretch the key by rehashing an additional 2016
+  # times
+  if part2:
+    for i in range(0, 2016):
+      h = hashlib.md5('{0}'.format(h).encode()).hexdigest()
+  return h
+
 if __name__ == '__main__':
   # Initialize a list to store all potential keys and our salt
   keys = []
@@ -29,11 +43,8 @@ if __name__ == '__main__':
   idx = 0
   # Generate 64 valid keys
   while len([k for k in keys if k.valid == True]) <= 64:
-    h = hashlib.md5('{0}{1}'.format(salt, idx).encode()).hexdigest()
-    # For part 2, we need to stretch the keys and hash an extra 2016 times
-    if part2:
-      for i in range(0, 2016):
-        h = hashlib.md5('{0}'.format(h).encode()).hexdigest()
+    # Get the hast to test against
+    h = get_hash(salt, idx)
     # Match triplets and quintuplets of any character in the hash
     m3 = re.search(r'(.)\1\1', h)
     m5 = re.search(r'(.)\1\1\1\1', h)
