@@ -40,9 +40,14 @@ discs = [
 if part2:
   discs.append(Disc(7, 11, 0))
 
-t = 0
+# Since we our largest disc must always be in the right position, we can
+# just incremement by the largest size
+ls = max([d.total_pos for d in discs])
+# This optimization also means we need to move time forward enough to
+# get the largest disc back to position 0 when the capsule hits
+t = [d.total_pos - d.curr_pos - d.order for d in discs if d.total_pos == ls][0]
 # Brute force is and iterate over time until everything is aligned
 while not all([d.check(t) for d in discs]):
-  t += 1
+  t += ls
 
 print('Press the button at t={0}.'.format(t))
