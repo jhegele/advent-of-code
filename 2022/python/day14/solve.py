@@ -9,7 +9,7 @@ class Sand:
         self.x, self.y = new_loc
 
     def get_potential_moves(self):
-        return (self.x, self.y + 1,), (self.x - 1, self.y + 1,), (self.x + 1, self.y - 1)
+        return (self.x, self.y + 1,), (self.x - 1, self.y + 1,), (self.x + 1, self.y + 1)
 
     def stop(self):
         self.in_motion = False
@@ -24,6 +24,7 @@ class Mapp:
             'y': (None, None)
         }
         self.sand = []
+        self.floor_y = None
 
     def add_rocks(self, path):
         segments_raw = path.strip().split(' -> ')
@@ -41,35 +42,43 @@ class Mapp:
 
     def add_floor(self):
         max_y = self.bounds['y'][1]
-        self.rocks.append((None, max_y + 2))
-        self._update_bounds()
+        self.floor_y = max_y + 2
+        self._update_bounds(max_y_offset=2)
 
-    def _update_bounds(self):
+    def _update_bounds(self, max_y_offset = 0):
         all_locs = [*self.rocks, *self.sand, self.sand_origin]
         xs = [x for x, _ in all_locs]
         ys = [y for _, y in all_locs]
         self.bounds['x'] = (min(xs), max(xs))
-        self.bounds['y'] = (min(ys), max(ys))
+        self.bounds['y'] = (min(ys), max(ys) + max_y_offset)
 
     def tick(self):
-        sand_in_motion = [s for s in self.sand if s.in_motion]
+        sand_in_motion = [idx for idx, s in enumerate(self.sand) if s.in_motion]
         if len(sand_in_motion) == 0:
-            print('new')
             origin_x, origin_y = self.sand_origin
             self.sand.append(Sand(origin_x, origin_y, True))
         else:
-            print('old')
-            grain = sand_in_motion[0]
-            occupied_locs = [*self.rocks] + [(s.x, s.y,) for s in self.sand if not s.in_motion]
-            valid_moves = [l for l in grain.get_potential_moves() if l not in occupied_locs]
-            if len(valid_moves) > 0:
-                grain.move(valid_moves[0])
-            else:
-                grain.stop()
+            for sand_idx in sand_in_motion:
+                if self.floor_y is not None:
+                    if self.sand[sand_idx].y == self.floor_y - 1:
+                        self.sand[sand_idx].stop()
+                        continue
+                occupied_locs = [*self.rocks] + [(s.x, s.y,) for s in self.sand if not s.in_motion]
+                valid_moves = [l for l in self.sand[sand_idx].get_potential_moves() if l not in occupied_locs]
+                if len(valid_moves) > 0:
+                    self.sand[sand_idx].move(valid_moves[0])
+                else:
+                    self.sand[sand_idx].stop()
 
     def is_overflowing(self):
         overflow_sand = [1 for s in self.sand if s.y >= self.bounds['y'][1]]
         return sum(overflow_sand) > 0
+
+    def is_origin_blocked(self):
+        return sum([1 for s in self.sand if not s.in_motion and (s.x, s.y) == self.sand_origin]) == 1
+
+    def count_resting_sand(self):
+        return sum([1 for s in self.sand if not s.in_motion])
                 
     def draw(self):
         if (self.bounds['x'] == (None, None,) or self.bounds['y'] == (None, None,)):
@@ -80,6 +89,9 @@ class Mapp:
         for y in range(min_y - 1, max_y + 2):
             row = ''
             for x in range(min_x - 1, max_x + 2):
+                if self.floor_y is not None and y == self.floor_y:
+                    row += '#'
+                    continue
                 loc = (x, y,)
                 if loc in [(s.x, s.y,) for s in self.sand]:
                     row += 'o'
@@ -220,26 +232,25 @@ def get_map(path):
         return f.readlines()
 
 def p1():
-    m = get_map('test.txt')
+    m = get_map('input.txt')
     map = Mapp()
     for p in m:
         map.add_rocks(p)
-    c = 1
     while not map.is_overflowing():
         map.tick()
-        map.draw()
-        if c > 2:
-            break
-        # c += 1
     map.draw()
-    # return map.get_resting_sand_count()
+    return map.count_resting_sand()
 
 def p2():
-    m = get_map('test.txt')
+    m = get_map('input.txt')
     map = Mapp()
     for p in m:
         map.add_rocks(p)
+    map.add_floor()
+    while not map.is_origin_blocked():
+        map.tick()
     map.draw()
+    return map.count_resting_sand()
     # m = get_map('test.txt')
     # map = Map()
     # for p in m:
@@ -256,5 +267,5 @@ def p2():
     #     # c += 1
     # return map.get_resting_sand_count()
 
-print('Part 1: ', p1())
-# print('Part 2: ', p2())
+# print('Part 1: ', p1())
+print('Part 2: ', p2())
