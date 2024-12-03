@@ -25,3 +25,12 @@ There are two criteria that determine whether a single report is safe: the eleme
 Part 2 introduces a twist that allows you to remove any single element from the list and, if removing that element makes the list safe then it can be marked as safe (even if it was unsafe with all of the elements present). My initial thought here was to build a set of heuristics that would make this more efficient. But the input is only 1,000 rows and each row, based on a cursory scan, has fewer than 10 elements. So it's entirely plausible to just brute force this which is what I ended up doing.
 
 I used the same basic approach from Part 1 but, if a list was unsafe in Part 1 I would iterate through the elements in the list, remove the element and then run the tests again. If it came back safe, then the entire list is marked as safe and we move on. This is neither the most time or computationally efficient approach but, it's Day 2 and I haven't written Python at all this year so...yeah.
+
+## [Day 03](https://adventofcode.com/2024/day/3)
+Day 3, it's regex time! Looking at the input, I was terrified that I'd have to parse nested instructions but thankfully that wasn't the case. Honestly not too bad if you're familiar with regex.
+
+### Part 1
+Fairly straightforward, just need to parse out the multiply instructions from the input string. Plenty of ways to do this but I leaned into regex and used capturing groups to match valid `mul()` instructions *and* capture the two values. Made it a bit easier when it came time to actually multiply them.
+
+### Part 2
+This is where I figured I would have to parse nested instructions but mercifully that didn't happen. Really just needed to add a flag to indicate whether multiplication was enabled or not. If you hit a `do()` instruction enabled is flipped on, while hitting a `don't()` instruction flips it off.
