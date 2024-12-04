@@ -34,3 +34,14 @@ Fairly straightforward, just need to parse out the multiply instructions from th
 
 ### Part 2
 This is where I figured I would have to parse nested instructions but mercifully that didn't happen. Really just needed to add a flag to indicate whether multiplication was enabled or not. If you hit a `do()` instruction enabled is flipped on, while hitting a `don't()` instruction flips it off.
+
+## [Day 04](https://adventofcode.com/2024/day/4)
+This one was a little more brutal than I anticipated for Day 4. I went through multiple approaches for Part 1 before finally settling on what was my first approach. I'm still not convinced that this was even the best approach, though. I was terrified that the approach I used for Part 1 would end up creating massive headaches for Part 2 but that didn't end up being the case and Part 2 ended up being much quicker which was a bit of a reprieve.
+
+### Part 1
+I spent a while thinking about how to approach this problem when I read through it the first time. Finding XMAS in the horizontal and vertical rows was fairly straightforward but accounting for the diagonals was where things would get tricky. I finally settled on an approach where I would just naively create all possible lines (horizontal, vertical, and both diagonal directions -- top left to bottom right, top right to bottom left). Once I had those lines I could just count the instances of "XMAS" or "SAMX".
+
+Creating the diagonal lines ended up being a two-step process which I didn't originally anticipate. But this makes sense if we think about vertical lines from top left to bottom right, as an example. Our starting point, expressed as `(x, y)` coords, for the first diagonal in this direction will be at `(3, 0)` and, from there, we will grab characters at: `(2, 1)`, `(1, 2)`, and `(0, 3)`. Our next starting point will be `(4, 0)` and so on. But at some point our starting point is the point at the top right of the grid and the diagonal we create runs across the middle of the grid. From that point on, our starting point moves to the right side of the grid and we're at `(<max_x>, 1)`. So, creating all of these lines means you need to iterate over starting points at the top of the grid first and then iterate over starting points along the right side.
+
+### Part 2
+Using the approach of creating all possible lines for Part 1 made me worried that I would create a massive issue for myself in Part 2 but those worries were unfounded. Part 2 ended up being pretty quick and the key is to realize that any valid "X-MAS" will have A as its center. So just iterate through all of the "A" characters and then find the points to the upper left, upper right, bottom right, and bottom left and see if they are the correct combo of characters to make it valid.
