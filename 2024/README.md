@@ -45,3 +45,18 @@ Creating the diagonal lines ended up being a two-step process which I didn't ori
 
 ### Part 2
 Using the approach of creating all possible lines for Part 1 made me worried that I would create a massive issue for myself in Part 2 but those worries were unfounded. Part 2 ended up being pretty quick and the key is to realize that any valid "X-MAS" will have A as its center. So just iterate through all of the "A" characters and then find the points to the upper left, upper right, bottom right, and bottom left and see if they are the correct combo of characters to make it valid.
+
+## Day 05
+
+Haven't had a chance o really work on Day 05 yet
+
+## Day 06
+Was excited when I saw Part 1 because I love these map-style puzzles where you have to navigate. Part 2 was rough, though. Fairly quickly realized how to optimize the algo but the implementation was a challenge.
+
+### Part 1
+The rules here are pretty straightforward. Created a class for the guard and a class for the map, then it's just navigating the guard through the map based on the rules provided.
+
+### Part 2
+Part 2 stumped me for a bit. Shortly after I started, I realized that you only need to place obstacles along the path that the guard walked in part 1. That helped to minimize the surface area that I would need to check. But it took me a long time to figure out how to determine if the guard was in a loop. I started out recording the coordinates visited by the guard and counting visits. I set various thresholds (from 3 up to 10000) to determine if a loop existed. This approach worked well for the sample but something about my implementation made it fail on the input.
+
+The breakthrough was realizing that I needed to record not **only** the coordinates visited but also the direction the guard was facing. If the guard passes a single point twice and is facing in the same direction, then he must be in a loop.
