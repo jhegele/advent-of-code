@@ -60,3 +60,14 @@ The rules here are pretty straightforward. Created a class for the guard and a c
 Part 2 stumped me for a bit. Shortly after I started, I realized that you only need to place obstacles along the path that the guard walked in part 1. That helped to minimize the surface area that I would need to check. But it took me a long time to figure out how to determine if the guard was in a loop. I started out recording the coordinates visited by the guard and counting visits. I set various thresholds (from 3 up to 10000) to determine if a loop existed. This approach worked well for the sample but something about my implementation made it fail on the input.
 
 The breakthrough was realizing that I needed to record not **only** the coordinates visited but also the direction the guard was facing. If the guard passes a single point twice and is facing in the same direction, then he must be in a loop.
+
+## Day 07
+Had to dredge up some old math knowledge and by "dredge up" what I mean is search Google using various descriptive phrases until I hit on the right concept. There's probably some clever heuristic that could be used to get the result and optimize execution time but I ended up using Cartesian Product and just brute forcing it.
+
+### Part 1
+Took me a while to think through how I wanted to approach this. Building some sort of insane nested loop to cover all of the possible combinations seemed like a terrible approach. I assumed there must be some concept from math and stats where I could generate all of the possible combinations of operations. That concept ended up being Cartesian Product.
+
+Assume we have a list of 4 inputs for a given line: `5, 6, 7, 8`. We need to perform three operations: between 5 and 6, between 6 and 7, and between 7 and 8. Now, if we say that 1 denotes addition and 2 denotes multiplication, we can use `itertools.product([1, 2], [1, 2], [1, 2])` to generate all possible combinations of operations for these three slots. Once we have that, we just start at the left and perform operations until we're done.
+
+### Part 2
+The only nuance to part 2 is that it introduces a third operation. Cartesian Product still works here, but the execution time is notably longer (still less than a minute for me).
