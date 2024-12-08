@@ -1,42 +1,32 @@
-from typing import NamedTuple, Set
+from functools import cmp_to_key
 
-class Rule(NamedTuple):
-  before: Set[int]
-  after: Set[int]
-
-with open("sample.input", "r") as f:
+with open("day05.input", "r") as f:
   text = f.read()
-  rules_raw, instructions_raw = text.split("\n\n")
-  rules = [tuple(map(int, line.split("|"))) for line in rules_raw.split("\n")]
-  instructions = [list(map(int, line.split(","))) for line in instructions_raw.split("\n")]
+  rules_raw, pages_raw = text.split('\n\n')
+  rules = [tuple(r.split('|')) for r in rules_raw.split('\n')]
+  pages_list = [p.split(',') for p in pages_raw.split('\n')]
 
-def parse_rules(rules: list[tuple[int, int]]):
-  parsed: dict[int, Rule] = {}
-  for rule in rules:
-    a, b = rule
-    if a not in parsed:
-      parsed[a] = Rule(before=set(), after=set())
-    if b not in parsed:
-      parsed[b] = Rule(before=set(), after=set())
-    parsed[a].before.add(b)
-    parsed[b].after.add(a)
-  return parsed
+def compare(a: str, b: str):
+  return -1 if (a, b) in rules else 1 if (b, a) in rules else 0
 
-def is_valid(idx: int, instructions: list[int], rules: list[tuple[int, int]]):
-  val = instructions[idx]
-  before = instructions[:idx]
-  for i in before:
-    print(i)
-    if val in rules[i].before:
-      return False
-  return True
+def part1():
+  total = 0
+  for pages in pages_list:
+    sorted_pages = sorted(pages, key=cmp_to_key(compare))
+    if (pages == sorted_pages):
+      middle_idx = len(pages)//2
+      total += int(pages[middle_idx])
+  return total
 
-def part1(rules: list[tuple[int, int]], instructions: list[list[int]]):
-  parsed = parse_rules(rules)
-  for instruction in instructions:
-    valid = [is_valid(idx, instruction, parsed) for idx, i in enumerate(instruction)]
-    print(valid)
+def part2():
+  total = 0
+  for pages in pages_list:
+    sorted_pages = sorted(pages, key=cmp_to_key(compare))
+    if (pages != sorted_pages):
+      middle_idx = len(sorted_pages)//2
+      total += int(sorted_pages[middle_idx])
+  return total
 
-  
-print(rules)
-print(part1(rules, instructions))
+
+print('Part 1: {}'.format(part1()))
+print('Part 2: {}'.format(part2()))

@@ -46,11 +46,16 @@ Creating the diagonal lines ended up being a two-step process which I didn't ori
 ### Part 2
 Using the approach of creating all possible lines for Part 1 made me worried that I would create a massive issue for myself in Part 2 but those worries were unfounded. Part 2 ended up being pretty quick and the key is to realize that any valid "X-MAS" will have A as its center. So just iterate through all of the "A" characters and then find the points to the upper left, upper right, bottom right, and bottom left and see if they are the correct combo of characters to make it valid.
 
-## Day 05
+## [Day 05](https://adventofcode.com/2024/day/5)
+This one was tougher than I expected, though I only worked on it off-and-on which didn't help. Had several false starts and ended up looking at some solutions before realizing that the simplest path here was to build a custom sort function and use it to sort the lists.
 
-Haven't had a chance o really work on Day 05 yet
+### Part 1
+Pretty straightforward once the sort function was built. Sort each list, compare it to the original and, if it's the same, add the middle value.
 
-## Day 06
+### Part 2
+Part 2 flips things around and we're only worried about the improperly sorted lists. So look for lists where the sorted version doesn't match, take the middle value of the properly sorted version, and add them up.
+
+## [Day 06](https://adventofcode.com/2024/day/6)
 Was excited when I saw Part 1 because I love these map-style puzzles where you have to navigate. Part 2 was rough, though. Fairly quickly realized how to optimize the algo but the implementation was a challenge.
 
 ### Part 1
@@ -61,7 +66,7 @@ Part 2 stumped me for a bit. Shortly after I started, I realized that you only n
 
 The breakthrough was realizing that I needed to record not **only** the coordinates visited but also the direction the guard was facing. If the guard passes a single point twice and is facing in the same direction, then he must be in a loop.
 
-## Day 07
+## [Day 07](https://adventofcode.com/2024/day/7)
 Had to dredge up some old math knowledge and by "dredge up" what I mean is search Google using various descriptive phrases until I hit on the right concept. There's probably some clever heuristic that could be used to get the result and optimize execution time but I ended up using Cartesian Product and just brute forcing it.
 
 ### Part 1
@@ -71,3 +76,12 @@ Assume we have a list of 4 inputs for a given line: `5, 6, 7, 8`. We need to per
 
 ### Part 2
 The only nuance to part 2 is that it introduces a third operation. Cartesian Product still works here, but the execution time is notably longer (still less than a minute for me).
+
+## [Day 08](https://adventofcode.com/2024/day/8)
+Felt like a nice little reprieve after a couple of tricky days. The only tricky part about Day 08 was keeping track of which direction you were moving.
+
+### Part 1
+Used combinatorials to generate all possible combos of antennas with the same frequency, then just ran them through a function that generated the antinodes based on the distance between the two antennas.
+
+## Part 2
+Used much of the same approach as Part 1 but, instead of generating a max of two antinodes, you keep going until you hit the map boundary.
